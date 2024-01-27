@@ -1,3 +1,7 @@
+><b>Updated (1/27/24 v2.4.3)</b><br>
+* working in python 3.11<br>
+* updated readme<br>
+
 ><b>Updated (1/8/20 v2.4.2)</b><br>
 * Fix readme.md ulpcc example.<br>
 

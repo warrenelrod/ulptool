@@ -1,4 +1,4 @@
-ulptool v2.4.2
+ulptool v2.4.3
 ==================
 Now Arduino can program the ULP coprocessor for your esp32 projects. The guide below assumes you installed the esp32 core with the preferred method using the board manager.
 
@@ -31,6 +31,13 @@ delete the release version number so the folder is just called 'ulptool'
 6. In the **ulptool** folder, move or copy the **... /ulptool/src/ulp_examples** folder to where Arduino saves your sketches.
 
 7. Move **esp32ulp-elf-binutils** folder you downloaded and unpacked to -> **... /esp32/tools/ulptool/src/esp32ulp-elf-binutils/**.
+
+8. if your esp is an s2 or other newer variant, uncomment the corresponding line starting at line 269 in src/esp32ulp_build_recipe.py
+    268. ## check which esp version you have
+    269. sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'sdkconfig'))
+    270. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'sdkconfig'))
+    271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'sdkconfig'))
+    272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'sdkconfig'))
 
 That's it, you now have all the files in place, lets look at very simple example to get you compiling ulp assembly code!
 
