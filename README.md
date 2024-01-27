@@ -1,5 +1,10 @@
 ulptool v2.4.3
 ==================
+
+NOTE: I have only tested this fork on windows and with python 3.11.
+
+
+
 Now Arduino can program the ULP coprocessor for your esp32 projects. The guide below assumes you installed the esp32 core with the preferred method using the board manager.
 
 Typically in Arduino you can compile assembly files using the '.S' extension. Using the ESP32 Arduino core framework these files would correspond to the Xtensa processors whose toolchain is incompatible with the ULP coprocessor. Luckily, Arduino provides a fairly easy series of recipes for building the ULP assembly files by using the '.s' extension which Arduino will let you create. Take note, the extension is a lower case **s**. In tring to keep the ulp build process the same as the esp-idf framework only a few small modifications are needed to the esp32 Arduino installation.
@@ -48,7 +53,7 @@ That's it, you now have all the files in place, lets look at very simple example
 Assembly Example:
 -----------------
 Open a blank Arduino sketch and copy and paste the code below into that sketch.
-```
+```cpp
 #include "esp32/ulp.h"// Must have this!!!
 
 // include ulp header you will create
@@ -87,7 +92,7 @@ static void init_run_ulp(uint32_t usec) {
 ```
 
 Create a new tab named <b>ulp.s</b>, take notice that the extension is a lower case **s**. Copy the code below into the ulp assembly file you just created.
-```
+```c
 /* Define variables, which go into .bss section (zero-initialized data) */
     .bss
 /* Store count value */
@@ -107,7 +112,7 @@ entry:
 ```
 
 Create a new tab named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
-```
+```h
 /*
     Put your ULP globals here you want visibility
     for your sketch. Add "ulp_" to the beginning
@@ -124,7 +129,7 @@ Upload the code then open your serial monitor, you should see the variable 'ulp_
 ULPCC Example:
 ---------------
 Open a blank Arduino sketch and copy and paste the code below into the that sketch. This is basically the same as the example above but written in c:)
-```
+```cpp
 #include "esp32/ulp.h"
 // include ulp header you will create
 #include "ulp_main.h"
@@ -159,7 +164,7 @@ static void init_run_ulp(uint32_t usec) {
 ```
 
 Create a new tab named <b>ulp_counter.c</b>, take notice of the ```#ifdef _ULPCC_```, code between these will be compiled by the ulp c compiler. Do not place any code outside of the ```#ifdef _ULPCC_``` or your sketch will fail to build. For further information about the limitations see Jason Fullers github site which is developed for the esp-idf not Arduino.
-```
+```c
 #ifdef _ULPCC_ // Do not add anything above this def
 // must include ulpcc helper functions
 #include <ulp_c.h>
@@ -176,7 +181,7 @@ void entry() {
 ```
 
 Create a new tab named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
-```
+```h
 /*
     Put your ULP globals here you want visibility
     for your sketch. Add "ulp_" to the beginning
