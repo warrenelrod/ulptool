@@ -32,12 +32,16 @@ delete the release version number so the folder is just called 'ulptool'
 
 7. Move **esp32ulp-elf-binutils** folder you downloaded and unpacked to -> **... /esp32/tools/ulptool/src/esp32ulp-elf-binutils/**.
 
-8. if your esp is an s2 or other newer variant, uncomment the corresponding line starting at line 269 in src/esp32ulp_build_recipe.py
-    268. ## check which esp version you have
+8. If your ESP is an S2 or another newer variant, uncomment the corresponding line starting at line 269 in `src/esp32ulp_build_recipe.py`:
+
+    ```python
+    268. ## check which ESP version you have
     269. sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'sdkconfig'))
     270. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'sdkconfig'))
     271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'sdkconfig'))
     272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'sdkconfig'))
+    ```
+
 
 That's it, you now have all the files in place, lets look at very simple example to get you compiling ulp assembly code!
 
