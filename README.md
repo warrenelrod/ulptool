@@ -46,6 +46,7 @@ delete the release version number so the folder is just called 'ulptool'
     271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'sdkconfig'))
     272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'sdkconfig'))
     ```
+9. Restart your IDE.
 
 
 That's it, you now have all the files in place, lets look at very simple example to get you compiling ulp assembly code!
