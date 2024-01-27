@@ -1,7 +1,7 @@
 ulptool v2.4.3
 ==================
 
-NOTE: I have only tested this fork on windows and with python 3.11.
+NOTE: I have only tested this fork with python 3.11, windows 11, esp binutils v2.0.14.
 
 
 
