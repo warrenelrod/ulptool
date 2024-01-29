@@ -16,7 +16,8 @@ Note - platform.local.txt version does not follow ulptool version.
 
 Manual Setup Steps:
 ==================
-1. Download the latest release of this repository and unpack-> https://github.com/duff2013/ulptool/releases/latest
+<!-- 1. Download the latest release of this repository and unpack-> https://github.com/duff2013/ulptool/releases/latest -->
+1. Download repo from this fork
 delete the release version number so the folder is just called 'ulptool'
 
 2. Download and unpack the latest pre-compiled binutils-esp32ulp toolchain for Mac/Linux/Windows: https://github.com/espressif/binutils-esp32ulp/releases/latest
@@ -41,11 +42,12 @@ delete the release version number so the folder is just called 'ulptool'
 
     ```python
     268. ## check which ESP version you have
-    269. sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'sdkconfig'))
-    270. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'sdkconfig'))
-    271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'sdkconfig'))
-    272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'sdkconfig'))
+    269. sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'qio_qspi', 'include', 'sdkconfig.h'))
+    270. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'qio_qspi', 'include', 'sdkconfig.h'))
+    271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'qio_qspi', 'include', 'sdkconfig.h'))
+    272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'qio_qspi', 'include', 'sdkconfig.h'))
     ```
+
 9. Restart your IDE.
 
 
