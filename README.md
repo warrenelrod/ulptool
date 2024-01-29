@@ -19,10 +19,8 @@ Manual Setup Steps:
     cd "C:/Users/USERNAME/AppData/Local/Arduino15/packages/esp32/tools" && git clone https://github.com/warrenelrod/ulptool.git
     ```
 
-<!-- TODO: fork my own repo with blending ulp into the latest binutils -->
-2. Download and unpack the latest pre-compiled binutils-esp32ulp toolchain for Mac/Linux/Windows: https://github.com/espressif/binutils-esp32ulp/releases/latest.
-
-3. Find your Arduino-esp32 core directory which Arduino IDE uses:
+<!-- TODO: use this information to set the root path regardless of platform -->
+2. Find your Arduino-esp32 core directory which Arduino IDE uses:
 
             Typically (Mac OS) -> ~/Library/Arduino15/packages/esp32
 
@@ -30,7 +28,11 @@ Manual Setup Steps:
 
             Typically (Linux) -> ~/.arduino15/packages/esp32
 
-4. Copy the 'platform.local.txt' file to **.../esp32/hardware/esp32/X.X.X/**.
+3. Copy the 'platform.local.txt' file to **.../esp32/hardware/esp32/X.X.X/**.
+
+<!-- TODO: fork my own repo with blending ulp into the latest binutils -->
+<!-- TODO: instead of manually downloading, just build a script that downloads and places the files in the directories automatically -->
+4. Download and unpack the latest pre-compiled binutils-esp32ulp toolchain for Mac/Linux/Windows: https://github.com/espressif/binutils-esp32ulp/releases/latest.
 
 5. Move **esp32ulp-elf-binutils** folder you downloaded and unpacked to -> **.../esp32/tools/ulptool/src/esp32ulp-elf-binutils/**.
 
