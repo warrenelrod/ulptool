@@ -1,6 +1,7 @@
 ><b>Updated (1/27/24 v2.4.3)</b><br>
 * working in python 3.11, windows 11, esp binutils v2.0.14.<br>
 * updated readme<br>
+* updated esp32ulp_build_recipe.py<br>
 
 ><b>Updated (1/8/20 v2.4.2)</b><br>
 * Fix readme.md ulpcc example.<br>

@@ -27,6 +27,11 @@ import platform
 import argparse
 import subprocess
 
+BOARD_VERSION = 'esp32'
+# BOARD_VERSION = 'esp32c3'
+# BOARD_VERSION = 'esp32s2'
+# BOARD_VERSION = 'esp32s3'
+
 CPREPROCESSOR_FLAGS = []
 
 EXTRA_FLAGS = dict()
@@ -166,12 +171,14 @@ def build_ulp(PATHS, ulp_sfiles, board_options, has_s_file):
     cmd = gen_binutils_size_cmd(PATHS)
     proc = subprocess.Popen(cmd[1],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=False,universal_newlines=True)
     (out, err) = proc.communicate()
+
+    file_path = os.path.join(PATHS['core'], 'tools', 'sdk', BOARD_VERSION, 'qio_qspi', 'include', 'sdkconfig.h')
+
     if err:
         error_string = cmd[0] + '\r' + err
         sys.exit(error_string)
     else:
         try:
-            file_path = os.path.join(PATHS['core'], 'tools', 'sdk', 'esp32', 'qio_qspi', 'include', 'sdkconfig.h')
             with open(file_path, "r") as file: text = file.read()
 
             mem = re.findall(r'#define CONFIG_ESP32_ULP_COPROC_RESERVE_MEM (.*?)\n', text)[0]
@@ -266,10 +273,7 @@ def build_ulp(PATHS, ulp_sfiles, board_options, has_s_file):
 
     ## Check if sdkconfig md5 hash has changed indicating the file has changed
     ## check which esp version you have
-    sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'qio_qspi', 'include', 'sdkconfig.h'))
-    # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'qio_qspi', 'include', 'sdkconfig.h'))
-    # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'qio_qspi', 'include', 'sdkconfig.h'))
-    # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'qio_qspi', 'include', 'sdkconfig.h'))
+    sdk_hash = md5(file_path)
     dict_hash = dict()
     with open(os.path.join(PATHS['ulptool'], 'hash.json'), 'r') as file:
         dict_hash = json.load(file)

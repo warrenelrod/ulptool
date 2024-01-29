@@ -1,9 +1,7 @@
 ulptool v2.4.3
 ==================
 
-NOTE: I have only tested this fork with python 3.11, windows 11, esp binutils v2.0.14.
-
-
+***NOTE: I have only tested this fork with python 3.11, windows 11, esp binutils v2.0.14.***
 
 Now Arduino can program the ULP coprocessor for your esp32 projects. The guide below assumes you installed the esp32 core with the preferred method using the board manager.
 
@@ -16,11 +14,13 @@ Note - platform.local.txt version does not follow ulptool version.
 
 Manual Setup Steps:
 ==================
-<!-- 1. Download the latest release of this repository and unpack-> https://github.com/duff2013/ulptool/releases/latest -->
-1. Download repo from this fork
-delete the release version number so the folder is just called 'ulptool'
+1. Open your terminal:
+    ```sh
+    cd "C:/Users/USERNAME/AppData/Local/Arduino15/packages/esp32/tools" && git clone https://github.com/warrenelrod/ulptool.git
+    ```
 
-2. Download and unpack the latest pre-compiled binutils-esp32ulp toolchain for Mac/Linux/Windows: https://github.com/espressif/binutils-esp32ulp/releases/latest
+<!-- TODO: fork my own repo with blending ulp into the latest binutils -->
+2. Download and unpack the latest pre-compiled binutils-esp32ulp toolchain for Mac/Linux/Windows: https://github.com/espressif/binutils-esp32ulp/releases/latest.
 
 3. Find your Arduino-esp32 core directory which Arduino IDE uses:
 
@@ -30,26 +30,24 @@ delete the release version number so the folder is just called 'ulptool'
 
             Typically (Linux) -> ~/.arduino15/packages/esp32
 
-4. Move the **ulptool** folder you downloaded and unpacked to the tools folder here -> **... /esp32/tools/ulptool/**.
+4. Copy the 'platform.local.txt' file to **.../esp32/hardware/esp32/X.X.X/**.
 
-5. Copy the 'platform.local.txt' file to **... /esp32/hardware/esp32/1.0.0/**. Remember **1.0.0** has to match your esp32 core version.
+5. Move **esp32ulp-elf-binutils** folder you downloaded and unpacked to -> **.../esp32/tools/ulptool/src/esp32ulp-elf-binutils/**.
 
-6. In the **ulptool** folder, move or copy the **... /ulptool/src/ulp_examples** folder to where Arduino saves your sketches.
-
-7. Move **esp32ulp-elf-binutils** folder you downloaded and unpacked to -> **... /esp32/tools/ulptool/src/esp32ulp-elf-binutils/**.
-
-8. If your ESP is an S2 or another newer variant, uncomment the corresponding line starting at line 269 in `src/esp32ulp_build_recipe.py`:
+<!-- <WARNING: UNTESTED> -->
+6. If your ESP is an S2 or another newer variant, uncomment the corresponding line starting at line 30 in `src/esp32ulp_build_recipe.py`:
 
     ```python
-    268. ## check which ESP version you have
-    269. sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32', 'qio_qspi', 'include', 'sdkconfig.h'))
-    270. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32c3', 'qio_qspi', 'include', 'sdkconfig.h'))
-    271. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s2', 'qio_qspi', 'include', 'sdkconfig.h'))
-    272. # sdk_hash = md5(os.path.join(PATHS['core'] , 'tools', 'sdk', 'esp32s3', 'qio_qspi', 'include', 'sdkconfig.h'))
+    30. BOARD_VERSION = 'esp32'
+    31. # BOARD_VERSION = 'esp32c3'
+    32. # BOARD_VERSION = 'esp32s2'
+    33. # BOARD_VERSION = 'esp32s3'
     ```
+<!-- </WARNING> -->
 
-9. Restart your IDE.
+7. Restart your IDE.
 
+<!-- 8. The **.../ulptool/src/ulp_examples** are outdated. -->
 
 That's it, you now have all the files in place, lets look at very simple example to get you compiling ulp assembly code!
 
@@ -90,11 +88,11 @@ static void init_run_ulp(uint32_t usec) {
     // use this binary loader instead
     esp_err_t err = ulptool_load_binary(0, ulp_main_bin_start, (ulp_main_bin_end - ulp_main_bin_start) / sizeof(uint32_t));
     // ulp coprocessor will run on its own now
-    err = ulp_run((&ulp_entry - RTC_SLOW_MEM) / sizeof(uint32_t));
+    err = ulp_run((&ulp_entry - RTC_SLOW_MEM));
 }
 ```
 
-Create a new tab named <b>ulp.s</b>, take notice that the extension is a lower case **s**. Copy the code below into the ulp assembly file you just created.
+Create a new file named <b>ulp.s</b>, take notice that the extension is a lower case **s**. Copy the code below into the ulp assembly file you just created.
 ```c
 /* Define variables, which go into .bss section (zero-initialized data) */
     .bss
@@ -114,7 +112,7 @@ entry:
     halt
 ```
 
-Create a new tab named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
+Create a new file named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
 ```h
 /*
     Put your ULP globals here you want visibility
@@ -160,13 +158,13 @@ void loop() {
 static void init_run_ulp(uint32_t usec) {
   ulp_set_wakeup_period(0, usec);
   esp_err_t err = ulptool_load_binary(0, ulp_main_bin_start, (ulp_main_bin_end - ulp_main_bin_start) / sizeof(uint32_t));
-  err = ulp_run((&ulp_entry - RTC_SLOW_MEM) / sizeof(uint32_t));
+  err = ulp_run((&ulp_entry - RTC_SLOW_MEM));
 
   if (err) Serial.println("Error Starting ULP Coprocessor");
 }
 ```
 
-Create a new tab named <b>ulp_counter.c</b>, take notice of the ```#ifdef _ULPCC_```, code between these will be compiled by the ulp c compiler. Do not place any code outside of the ```#ifdef _ULPCC_``` or your sketch will fail to build. For further information about the limitations see Jason Fullers github site which is developed for the esp-idf not Arduino.
+Create a new file named <b>ulp_counter.c</b>, take notice of the ```#ifdef _ULPCC_```, code between these will be compiled by the ulp c compiler. Do not place any code outside of the ```#ifdef _ULPCC_``` or your sketch will fail to build. For further information about the limitations see Jason Fullers github site which is developed for the esp-idf not Arduino.
 ```c
 #ifdef _ULPCC_ // Do not add anything above this def
 // must include ulpcc helper functions
@@ -183,7 +181,7 @@ void entry() {
 #endif // do not add anything after here
 ```
 
-Create a new tab named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
+Create a new file named <b>ulp_main.h</b>. This header allows your sketch to see global variables whose memory is allocated in your ulp assembly file. This memory is from the SLOW RTC section. Copy the code below into the header file. As with the esp-idf you have to add 'ulp_' to the front of the variable name. Unlike esp-idf the name of this header is always **ulp_main.h**.
 ```h
 /*
     Put your ULP globals here you want visibility
